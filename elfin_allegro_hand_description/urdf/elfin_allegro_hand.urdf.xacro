@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot name="allegro_hand" xmlns:xacro="http://www.ros.org/wiki/xacro">
+	<xacro:property name="inch_to_m" value="0.0254"/>
+	<xacro:property name="ee_dip" value="${0.21*inch_to_m}"/>
+	<xacro:property name="mount_block_height" value="0.00953"/>
+	<xacro:property name="mount_block_radius" value="0.03875"/>
+	<xacro:property name="allegro_palm" value="0.095"/>
+	<xacro:property name="allegro_x_bias" value="0.0091"/>
+
+	<xacro:property name="PI" value="3.141592"/>
+	<xacro:property name="aluminum_density" value="2710"/>
+	<xacro:property name="mount_block_mass" value="${PI*mount_block_radius*mount_block_radius*mount_block_height*aluminum_density}"/>
+	<xacro:property name="mount_block_inertia_zz" value="${0.5*mount_block_mass*mount_block_radius*mount_block_radius}"/>
+	<xacro:property name="mount_block_inertia_xx" value="${1/12*mount_block_mass*(3*mount_block_radius*mount_block_radius+mount_block_height*mount_block_height)}"/>
+	
+	<xacro:include filename="$(find elfin_description)/urdf/elfin5.urdf.xacro"/>
+	<xacro:include filename="$(find allegro_hand_description)/urdf/allegro_hand_r.urdf.xacro"/>
+
+	<joint name="mount_block_joint" type="fixed">
+		<origin xyz="0 0 ${ee_dip}" rpy="0 0 0"/>
+		<parent link="elfin_end_link"/>
+		<child link="mount_block"/>
+	</joint>
+
+	<link name="mount_block">
+		<inertial>
+			<origin xyz="0 0 ${mount_block_height/2}" rpy="0 0 0" />
+			<mass value="${mount_block_mass}"/>
+			<inertia ixx="${mount_block_inertia_xx}"  ixy="0"  ixz="0" iyy="${mount_block_inertia_xx}" iyz="0" izz="${mount_block_inertia_zz}" />
+		</inertial>
+
+		<visual>
+			<origin xyz="0 0 ${mount_block_height/2}" rpy="0 0 0" />
+			<geometry>
+				<cylinder radius="${mount_block_radius}" length="${mount_block_height}"/>
+			</geometry>
+			<material name="metal"/>
+		</visual>
+
+		<collision>
+			<origin xyz="0 0 ${mount_block_height/2}" rpy="0 0 0" />
+			<geometry>
+				<cylinder radius="${mount_block_radius}" length="${mount_block_height}"/>
+			</geometry>
+		</collision>
+	</link>
+
+	<xacro:allegro_hand parent_link="elfin_end_link">
+	<origin xyz="${allegro_x_bias} 0 ${1.5*mount_block_height+allegro_palm}" rpy="0 0 0"/>
+	</xacro:allegro_hand>
+
+</robot>

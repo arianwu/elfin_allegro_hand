@@ -1,0 +1,26 @@
+allegro_hand_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+     - jmf1
+     - jmf2
+     - jmf3
+     - jmf4
+     - jpf1
+     - jpf2
+     - jpf3
+     - jpf4
+     - jif1
+     - jif2
+     - jif3
+     - jif4
+     - jth1
+     - jth2
+     - jth3
+     - jth4
+  constraints:
+      goal_time: 0.6
+      stopped_velocity_tolerance: 0.1
+
+  stop_trajectory_duration: 0.05
+  state_publish_rate:  25
+  action_monitor_rate: 10
